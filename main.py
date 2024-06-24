@@ -97,6 +97,8 @@ def rest_img_test():
   top_3_results = output[:3]
 
   # 각 결과에 대해 영화 정보 가져오기xx
+  result_list = []
+
   for result in top_3_results:
     predicted_title_with_year = result['label']
     predicted_title = extract_title_and_year(predicted_title_with_year)
@@ -107,6 +109,8 @@ def rest_img_test():
     overview = movie_info['overview']
     # 번역
     translated_overview = translator.translate(overview)
+    # 결과리스트에 append하기
+    result_list.append({'movie_info':movie_info,'overview':translated_overview})
 
     # 결과 출력
     if movie_info:
@@ -130,7 +134,8 @@ def rest_img_test():
 
   ##############################################3
   img_str = base64.b64encode(cv2.imencode('.jpg', img)[1]).decode()
-  data = {"param": param, "file": img_str, "movie_info":movie_info,'overview':translated_overview}
+  #data = {"param": param, "file": img_str, "movie_info":movie_info,'overview':translated_overview}
+  data = {"param": param, "file": img_str, "result_list": result_list}
   response = make_response(jsonify(data))
   response.headers.add("Access-Control-Allow-Origin", "*")
   return response
