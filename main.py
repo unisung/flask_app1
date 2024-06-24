@@ -1,5 +1,6 @@
 # _*_ coding: utf-8 _*_
 
+import config
 from flask import Flask, jsonify, render_template, request, make_response
 import cv2
 import base64
@@ -11,13 +12,15 @@ from deep_translator import GoogleTranslator
 app = Flask(__name__)
 
 # TMDB API 설정
-TMDB_API_KEY = '119e4dc9f5f7b03f012b14d0c9c92598'
+
+TMDB_API_KEY = config.TMDB_API_KEY
 TMDB_POSTER_BASE_URL = 'https://image.tmdb.org/t/p/original'
 TMDB_API_URL_SEARCH = f'https://api.themoviedb.org/3/search/movie'
 TMDB_API_URL_MOVIE = f'https://api.themoviedb.org/3/movie/'
 
 # Hugging Face API 설정
-API_TOKEN = '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'
+API_TOKEN = config.API_TOKEN
+
 headers = {"Authorization": f"Bearer {API_TOKEN}"}
 # 프레임으로 영화분류모델
 API_URL = "https://api-inference.huggingface.co/models/dima806/movie_identification_by_frame"
@@ -26,6 +29,11 @@ API_URL = "https://api-inference.huggingface.co/models/dima806/movie_identificat
 translator = GoogleTranslator(source='en', target='ko') # 구글 번역기 영어 -> 한글
 
 
+def get_env():
+    f=open('config.py', 'r')
+    for line in f.readlines():
+        kv = line.split('=')
+        print(kv[0]+":"+kv[1])
 
 @app.route('/')
 def index():
